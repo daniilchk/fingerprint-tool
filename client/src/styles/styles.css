@@ -1,0 +1,38 @@
+body {
+    height: 100vh;
+    overflow: hidden;
+    margin: 0;
+    padding: 20px;
+    background: #f4f4f9;
+    font-family: Arial, sans-serif;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20vh;
+}
+
+button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 48px;
+    border-radius: 8px;
+    border: 1px solid #1324da;
+    background: #3d98da;
+    color: #ffffff;
+    transition: all 0.3s;
+    cursor: pointer;
+
+    &:hover {
+        background: #0c72be;
+    }
+    &:active {
+        background: #062abe;
+    }
+}
