@@ -4,7 +4,8 @@ import crypto from "crypto";
 class FingerprintController {
   async handleFingerprint(req, res, next) {
     try {
-      const {...data} = req.body;
+      const { ...data} = req.body;
+      const ip = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
       const hash = crypto.createHash('sha256').update(JSON.stringify(data)).digest('hex');
 
       let currentFingerprint = await dbService.getFingerprint(hash);
@@ -12,9 +13,8 @@ class FingerprintController {
       if (!currentFingerprint) {
         currentFingerprint = await dbService.addFingerprint(hash, data);
       }
-      console.log(currentFingerprint);
 
-      await dbService.addDeviceRequest(currentFingerprint.id);
+      await dbService.addDeviceRequest(currentFingerprint.id, ip);
 
       if (currentFingerprint.is_block) {
         return res.status(403).json({ message: "Access denied"});

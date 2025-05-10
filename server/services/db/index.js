@@ -58,11 +58,11 @@ class DbService {
     })
   }
 
-  async addDeviceRequest(hashId) {
+  async addDeviceRequest(fingerprintId, ip) {
     return await this.makeRequestToDb({
       query: SQL.deviceRequestAdd,
       errorMessage: 'deviceRequestAdd',
-      values: [ hashId ],
+      values: [ fingerprintId, ip ],
       isSingle: true,
     })
   }

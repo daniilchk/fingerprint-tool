@@ -1,3 +1,3 @@
-INSERT INTO public.RecorderedDeviceRequest (hash_id)
-VALUES ($1::bigint)
+INSERT INTO public.RecordedDeviceRequest (fingerprint_id, ip)
+VALUES ($1::bigint, $2::INET)
 RETURNING *;
