@@ -50,12 +50,12 @@ class DbService {
   }
 
   async addFingerprint(hash, data) {
-    return await this.makeRequestToDb({
+    return  await this.makeRequestToDb({
       query: SQL.fingerprintAdd,
       errorMessage: 'fingerprintAdd',
       values: [hash, data],
       isSingle: true,
-    })
+    });
   }
 
   async addDeviceRequest(fingerprintId, ip) {

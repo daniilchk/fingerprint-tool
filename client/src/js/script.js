@@ -1,34 +1,39 @@
 const button = document.getElementById('button');
+const main = document.getElementById('main');
 
 button.addEventListener('click', async () => {
   try {
     const fingerprintData = {
-      user_agent: navigator.userAgent,
-      platform: navigator.platform,
-      hardware_concurrency: navigator.hardwareConcurrency || 0,
-      device_memory: navigator.deviceMemory || 0,
-      available_resolution: `${window.screen.availWidth}x${window.screen.availHeight}`,
-      color_depth: window.screen.colorDepth,
-      pixel_ratio: window.devicePixelRatio || 1,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      timezone_offset: new Date().getTimezoneOffset(),
-      cookies_enabled: navigator.cookieEnabled,
-      local_storage: !!window.localStorage,
-      session_storage: !!window.sessionStorage,
-      indexed_db: !!window.indexedDB,
-      webgl_vendor: getWebGLVendor(),
-      webgl_renderer: getWebGLRenderer(),
-      canvas_fingerprint: await getCanvasFingerprint(),
-      plugins: Array.from(navigator.plugins).map(p => p.name),
-      mime_types: Array.from(navigator.mimeTypes).map(m => m.type),
-      touch_support: {
-        max_touch_points: navigator.maxTouchPoints || 0,
-        touch_event: 'ontouchstart' in window,
-        pointer_event: 'onpointerdown' in window
-      },
-      media_devices_count: await getMediaDevicesCount()
+      staticData: {
+        user_agent: navigator.userAgent,
+        platform: navigator.platform,
+        hardware_concurrency: navigator.hardwareConcurrency || 0,
+        device_memory: navigator.deviceMemory || 0,
+        available_resolution: `${window.screen.availWidth}x${window.screen.availHeight}`,
+        color_depth: window.screen.colorDepth,
+        pixel_ratio: window.devicePixelRatio || 1,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        timezone_offset: new Date().getTimezoneOffset(),
+        cookies_enabled: navigator.cookieEnabled,
+        local_storage: !!window.localStorage,
+        session_storage: !!window.sessionStorage,
+        indexed_db: !!window.indexedDB,
+        webgl_vendor: getWebGLVendor(),
+        webgl_renderer: getWebGLRenderer(),
+        webdriver: navigator.webdriver,
+        canvas_fingerprint: await getCanvasFingerprint(),
+        plugins: Array.from(navigator.plugins).map(p => p.name),
+        mime_types: Array.from(navigator.mimeTypes).map(m => m.type),
+        // touch_support: {
+        //   max_touch_points: navigator.maxTouchPoints || 0,
+        //   touch_event: 'ontouchstart' in window,
+        //   pointer_event: 'onpointerdown' in window
+        // }, это будет в плавающих критериях, добавлю потом
+        media_devices_count: await getMediaDevicesCount()
+      }
     };
 
+    button.classList.add('loading');
     const response = await fetch('http://localhost:3000/api/fingerprint', {
       method: 'POST',
       headers: {
@@ -36,6 +41,7 @@ button.addEventListener('click', async () => {
       },
       body: JSON.stringify(fingerprintData)
     });
+    button.classList.remove('loading');
 
     const result = await response.json();
     if (!response.ok) {
@@ -43,17 +49,17 @@ button.addEventListener('click', async () => {
       throw new Error(errorMsg);
     }
 
-    alert('Verification passed successfully');
+    main.innerText = 'Verification passed successfully';
   } catch(e) {
-    alert(`Error: ${e.message}`);
+    main.innerText = 'Verification failed';
   }
 })
 
 function getWebGLVendor() {
   try {
-    const canvas = document.createElement('canvas');
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    return gl ? gl.getParameter(gl.VENDOR) : 'unsupported';
+    const gl = document.createElement('canvas').getContext('webgl');
+    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+    return gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
   } catch (e) {
     return 'error';
   }
