@@ -66,6 +66,34 @@ class DbService {
       isSingle: true,
     })
   }
+
+  async getConfigEnabledCriterion() {
+    return await this.makeRequestToDb({
+      query: SQL.configGetEnabledCriterion,
+      errorMessage: 'getConfigEnabledCriterion',
+      isSingle: false,
+    })
+  }
+
+  async updateFingerprint(id, updates) {
+    const keys = Object.keys(updates);
+
+    const setClauses = keys
+      .map((col, idx) => `"${col}" = $${idx + 2}`)
+      .join(', ');
+
+    const values = [id, ...keys.map(k => updates[k])];
+
+    const query = `
+      UPDATE public.DeviceFingerprints
+      SET ${setClauses}
+      WHERE id = $1
+      RETURNING *;
+    `;
+
+    const result = await this.pool.query(query, values);
+    return result.rows[0] || null;
+  }
 }
 
 export const dbService = new DbService(pool);

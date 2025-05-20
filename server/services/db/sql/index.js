@@ -20,4 +20,8 @@ export default {
     `${sqlPath}/device_request_add.sql`,
     'utf-8',
   ),
+  configGetEnabledCriterion: readFileSync(
+    `${sqlPath}/config_get_enabled_criterion.sql`,
+    'utf-8',
+  ),
 }

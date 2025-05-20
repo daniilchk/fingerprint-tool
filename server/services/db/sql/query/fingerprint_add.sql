@@ -19,7 +19,10 @@ INSERT INTO public.DeviceFingerprints (
   canvas_fingerprint,
   plugins,
   mime_types,
-  media_devices_count
+  media_devices_count,
+  webdriver_fine,
+  low_hardware_fine,
+  suspicious_asset_patterns_fine
 )
 SELECT
   $1::VARCHAR(64) AS hash,
@@ -48,28 +51,34 @@ SELECT
     SELECT ARRAY_AGG(elem)
     FROM jsonb_array_elements_text(j.mime_types) AS elem
   ) AS mime_types,
-  j.media_devices_count::INT AS media_devices_count
+  j.media_devices_count::INT AS media_devices_count,
+  j.webdriver_fine::INT AS webdriver_fine,
+  j.low_hardware_fine::INT AS low_hardware_fine,
+  j.suspicious_asset_patterns_fine::INT AS suspicious_asset_patterns_fine
 FROM
   jsonb_to_record($2::JSONB) AS j(
-    user_agent               TEXT,
-    platform                 TEXT,
-    hardware_concurrency     TEXT,
-    device_memory            TEXT,
-    available_resolution     TEXT,
-    color_depth              TEXT,
-    pixel_ratio              TEXT,
-    timezone                 TEXT,
-    timezone_offset          TEXT,
-    cookies_enabled          TEXT,
-    local_storage            TEXT,
-    session_storage          TEXT,
-    indexed_db               TEXT,
-    webgl_vendor             TEXT,
-    webgl_renderer           TEXT,
-    webdriver                TEXT,
-    canvas_fingerprint       TEXT,
-    plugins                  JSONB,
-    mime_types               JSONB,
-    media_devices_count      TEXT
+    user_agent TEXT,
+    platform TEXT,
+    hardware_concurrency TEXT,
+    device_memory TEXT,
+    available_resolution TEXT,
+    color_depth TEXT,
+    pixel_ratio TEXT,
+    timezone TEXT,
+    timezone_offset TEXT,
+    cookies_enabled TEXT,
+    local_storage TEXT,
+    session_storage TEXT,
+    indexed_db TEXT,
+    webgl_vendor TEXT,
+    webgl_renderer TEXT,
+    webdriver TEXT,
+    canvas_fingerprint TEXT,
+    plugins JSONB,
+    mime_types JSONB,
+    media_devices_count TEXT,
+    webdriver_fine NUMERIC,
+    low_hardware_fine NUMERIC,
+    suspicious_asset_patterns_fine NUMERIC
   )
   RETURNING *;
