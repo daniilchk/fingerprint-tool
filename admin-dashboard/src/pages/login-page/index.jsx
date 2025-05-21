@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import styles from './styles.module.css';
 
 export default function LoginPage() {
-  const { user, login } = useAuth();
+  const { config, login } = useAuth();
   const nav = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -15,10 +15,10 @@ export default function LoginPage() {
   };
 
   useEffect(() => {
-    if (user) {
-      nav('/dashboard', { replace: true });
+    if (config) {
+      nav('/', { replace: true });
     }
-  }, [user, nav]);
+  }, [config, nav]);
 
   return (
     <div className={styles.container}>

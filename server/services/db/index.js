@@ -75,6 +75,14 @@ class DbService {
     })
   }
 
+  async getConfigAllCriterion() {
+    return await this.makeRequestToDb({
+      query: SQL.configGetAllCriterion,
+      errorMessage: 'getConfigAllCriterion',
+      isSingle: false,
+    })
+  }
+
   async updateFingerprint(id, updates) {
     const keys = Object.keys(updates);
 

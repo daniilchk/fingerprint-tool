@@ -24,4 +24,8 @@ export default {
     `${sqlPath}/config_get_enabled_criterion.sql`,
     'utf-8',
   ),
+  configGetAllCriterion: readFileSync(
+    `${sqlPath}/config_get_all_criterion.sql`,
+    'utf-8',
+  ),
 }
