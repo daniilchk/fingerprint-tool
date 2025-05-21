@@ -12,12 +12,20 @@ export default {
     `${sqlPath}/fingerprint_get.sql`,
     'utf-8',
   ),
+  fingerprintsGet: readFileSync(
+    `${sqlPath}/fingerprints_get.sql`,
+    'utf-8',
+  ),
   fingerprintAdd: readFileSync(
     `${sqlPath}/fingerprint_add.sql`,
     'utf-8',
   ),
   deviceRequestAdd: readFileSync(
     `${sqlPath}/device_request_add.sql`,
+    'utf-8',
+  ),
+  deviceRequestsGet: readFileSync(
+    `${sqlPath}/device_requests_get.sql`,
     'utf-8',
   ),
   configGetEnabledCriterion: readFileSync(

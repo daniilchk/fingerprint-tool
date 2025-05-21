@@ -102,6 +102,22 @@ class DbService {
     const result = await this.pool.query(query, values);
     return result.rows[0] || null;
   }
+
+  async getFingerprints() {
+    return await this.makeRequestToDb({
+      query: SQL.fingerprintsGet,
+      errorMessage: 'fingerprintsGet',
+      isSingle: false,
+    })
+  }
+
+  async getDeviceRequests() {
+    return await this.makeRequestToDb({
+      query: SQL.deviceRequestsGet,
+      errorMessage: 'deviceRequestGet',
+      isSingle: false,
+    })
+  }
 }
 
 export const dbService = new DbService(pool);

@@ -13,7 +13,7 @@ export function AuthProvider({ children }) {
   const nav = useNavigate();
 
   useEffect(() => {
-    axios.get(`${api_domain}/config`)
+    axios.get(`${api_domain}/api/config`)
       .then(res => setConfig(res.data.data))
       .catch(() => setConfig(null))
       .finally(() => setIsLoading(false));

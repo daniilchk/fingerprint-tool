@@ -63,6 +63,15 @@ class FingerprintController {
 
     return Number(fingerprint.risk_score);
   }
+
+  getFingerprints = async (req, res, next) => {
+    try {
+      const data = await dbService.getFingerprints();
+      res.json(data);
+    } catch(e) {
+      next(e);
+    }
+  }
 }
 
 export const fingerprintController = new FingerprintController();
