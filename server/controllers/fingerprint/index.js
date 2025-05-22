@@ -5,15 +5,24 @@ import { CRITERIA, FINE_CRITERION_DATA, MAX_FINE_BY_CRITERION } from "../../cons
 class FingerprintController {
   handleFingerprint = async (req, res, next) => {
     try {
-      const { staticData } = req.body;
+      const { static_data, dynamic_data } = req.body;
       const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-      const hash = crypto.createHash('sha256').update(JSON.stringify(staticData)).digest('hex');
+      const hash = crypto.createHash('sha256').update(JSON.stringify(static_data)).digest('hex');
 
       let currentFingerprint = await dbService.getFingerprint(hash);
 
       if (!currentFingerprint) {
-        const fines = this.collectFines(staticData, FINE_CRITERION_DATA[CRITERIA.device_and_browser_signals]);
-        currentFingerprint = await dbService.addFingerprint(hash, {...staticData, ...fines});
+        const deviceFines = this.collectFines(static_data, FINE_CRITERION_DATA[CRITERIA.device_and_browser_signals]);
+        currentFingerprint = await dbService.addFingerprint(hash, {...static_data, ...deviceFines});
+      }
+
+      const otherFines = this.collectFines(
+        {...static_data, ...dynamic_data},
+        [ ...FINE_CRITERION_DATA[CRITERIA.page_behavior]]
+      );
+
+      if (otherFines) {
+        currentFingerprint = await dbService.updateFingerprint(currentFingerprint.id, otherFines);
       }
 
       await dbService.addDeviceRequest(currentFingerprint.id, ip);
@@ -32,13 +41,15 @@ class FingerprintController {
 
   collectFines(fingerprint, fines)  {
     const data = {};
+    let hasFines = false;
     for (const fine of fines) {
       if (fingerprint[fine.column] != null) continue;
       if (fine.evaluate(fingerprint)) {
+        hasFines = true;
         data[fine.column] = fine.fineValue;
       }
     }
-    return data;
+    return hasFines ? data : null;
   }
 
   async calcRisk(fingerprint) {

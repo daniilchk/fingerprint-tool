@@ -1,10 +1,15 @@
 const button = document.getElementById('button');
 const main = document.getElementById('main');
+let noMovement = true;
+let pageLoadTime = 0;
 
 button.addEventListener('click', async () => {
+  const clickTime = Date.now();
+  const isFastClick = (clickTime - pageLoadTime) < 500;
+
   try {
     const fingerprintData = {
-      staticData: {
+      static_data: {
         user_agent: navigator.userAgent,
         platform: navigator.platform,
         hardware_concurrency: navigator.hardwareConcurrency || 0,
@@ -24,13 +29,12 @@ button.addEventListener('click', async () => {
         canvas_fingerprint: await getCanvasFingerprint(),
         plugins: Array.from(navigator.plugins).map(p => p.name),
         mime_types: Array.from(navigator.mimeTypes).map(m => m.type),
-        // touch_support: {
-        //   max_touch_points: navigator.maxTouchPoints || 0,
-        //   touch_event: 'ontouchstart' in window,
-        //   pointer_event: 'onpointerdown' in window
-        // }, это будет в плавающих критериях, добавлю потом
         media_devices_count: await getMediaDevicesCount()
-      }
+      },
+      dynamic_data: {
+        no_movement: noMovement,
+        fast_form_speed: isFastClick,
+      },
     };
 
     button.classList.add('loading');
@@ -85,7 +89,7 @@ async function getCanvasFingerprint() {
       || canvas.getContext('experimental-webgl', { preserveDrawingBuffer: true });
     if (!gl) return 'webgl-not-supported';
 
-    // 2) Рисуем простую треугольную сцену
+    // Рисуем простую треугольную сцену
     const vertShaderSrc = `
     attribute vec2 a_position;
     void main() {
@@ -132,11 +136,11 @@ async function getCanvasFingerprint() {
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-    // 3) Читаем «сырые» пиксели
+    // Читаем «сырые» пиксели
     const pixels = new Uint8Array(canvas.width * canvas.height * 4);
     gl.readPixels(0, 0, canvas.width, canvas.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
 
-    // 4) Сразу собираем несколько WebGL-параметров
+    // Сразу собираем несколько WebGL-параметров
     const ext  = gl.getExtension('WEBGL_debug_renderer_info');
     const info = {
       vendor: ext ? gl.getParameter(ext.UNMASKED_VENDOR_WEBGL) : 'none',
@@ -145,7 +149,7 @@ async function getCanvasFingerprint() {
       shadingLanguage: gl.getParameter(gl.SHADING_LANGUAGE_VERSION)
     };
 
-    // 5) Подготовим один большой буфер для хеша:
+    // Подготовим один большой буфер для хеша:
     // сначала параметры в строку, потом raw-пиксели
     const encoder = new TextEncoder();
     const infoBytes = encoder.encode(
@@ -158,7 +162,7 @@ async function getCanvasFingerprint() {
     total.set(infoBytes, 0);
     total.set(pixels, infoBytes.length);
 
-    // 6) Посчитаем SHA-256
+    // Посчитаем SHA-256
     const hashBuf = await crypto.subtle.digest('SHA-256', total);
     const hashArr = Array.from(new Uint8Array(hashBuf));
     return hashArr.map(b => b.toString(16).padStart(2,'0')).join('');
@@ -175,3 +179,19 @@ async function getMediaDevicesCount() {
     return 0;
   }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  pageLoadTime = Date.now();
+
+  document.addEventListener('mousemove', function() {
+    noMovement = false;
+  }, { once: true });
+
+  window.addEventListener('scroll', function() {
+    noMovement = false;
+  }, { once: true, passive: true });
+
+  document.addEventListener('touchstart', function() {
+    noMovement = false;
+  }, { once: true, passive: true });
+});

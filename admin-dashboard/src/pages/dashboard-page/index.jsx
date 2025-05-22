@@ -49,7 +49,7 @@ export default function Dashboard() {
           </tr>
           </thead>
           <tbody>
-          {config.map(item => (
+          {config.sort((a, b) => Number(a.id) - Number(b.id)).map(item => (
             <tr key={item.criterion_id}>
               <td data-label="ID">{item.criterion_id}</td>
               <td data-label="Criterion">{item.criterion_name.replace(/_/g, ' ').toUpperCase()}</td>
@@ -69,6 +69,11 @@ export default function Dashboard() {
           </tbody>
         </table>
       </div>
+      <span>Threshold for Access Denied</span>
+      <input
+        className={styles.input}
+        value={60}
+      />
       <button
         className={styles.button}
         onClick={handleUpdate}
