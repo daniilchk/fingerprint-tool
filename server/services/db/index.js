@@ -118,6 +118,15 @@ class DbService {
       isSingle: false,
     })
   }
+
+  async getRequestCountInMinuteById(id) {
+    return await this.makeRequestToDb({
+      query: SQL.deviceRequestsByIdGetCountInMinute,
+      errorMessage: 'requestsCountGet',
+      values: [ id ],
+      isSingle: true,
+    })
+  }
 }
 
 export const dbService = new DbService(pool);

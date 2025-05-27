@@ -36,4 +36,8 @@ export default {
     `${sqlPath}/config_get_all_criterion.sql`,
     'utf-8',
   ),
+  deviceRequestsByIdGetCountInMinute: readFileSync(
+    `${sqlPath}/device_requests_by_id_get_count_in_minute.sql`,
+    'utf-8',
+  ),
 }

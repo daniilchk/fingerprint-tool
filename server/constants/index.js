@@ -1,4 +1,5 @@
 import { hasSuspiciousAssetPatterns } from "../helpers/has-suspicious-asset-patterns.js";
+import { isFingerprintFlooding } from "../helpers/is-fingerprint-flooding.js";
 
 export const CRITERIA = {
   device_and_browser_signals: "device_and_browser_signals",
@@ -36,13 +37,22 @@ export const FINE_CRITERION_DATA = {
       fineValue: 10,
     }
   ],
-  [CRITERIA.session_history]: {
-    is_shared_ip_fine: 15,
-  },
+  [CRITERIA.session_history]: [
+    {
+      column: "high_request_rate_fine",
+      evaluate: async (fingerprint) => await isFingerprintFlooding(fingerprint?.id),
+      fineValue: 25,
+    },
+    {
+      column: "timestamp_pattern_fine",
+      evaluate: (fingerprint) => fingerprint?.no_movement, //переделать
+      fineValue: 20,
+    },
+  ],
 }
 
 export const MAX_FINE_BY_CRITERION = {
   [CRITERIA.device_and_browser_signals]: 45,
   [CRITERIA.page_behavior]: 20,
-  [CRITERIA.session_history]: 15,
+  [CRITERIA.session_history]: 45,
 }

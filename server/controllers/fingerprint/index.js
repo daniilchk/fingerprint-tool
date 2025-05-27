@@ -16,9 +16,9 @@ class FingerprintController {
         currentFingerprint = await dbService.addFingerprint(hash, {...static_data, ...deviceFines});
       }
 
-      const otherFines = this.collectFines(
-        {...static_data, ...dynamic_data},
-        [ ...FINE_CRITERION_DATA[CRITERIA.page_behavior]]
+      const otherFines = await this.collectFines(
+        {...static_data, ...dynamic_data, id: currentFingerprint?.id},
+        [ ...FINE_CRITERION_DATA[CRITERIA.page_behavior], ...FINE_CRITERION_DATA[CRITERIA.session_history]],
       );
 
       if (otherFines) {
@@ -39,12 +39,12 @@ class FingerprintController {
     }
   }
 
-  collectFines(fingerprint, fines)  {
+  async collectFines(fingerprint, fines)  {
     const data = {};
     let hasFines = false;
     for (const fine of fines) {
       if (fingerprint[fine.column] != null) continue;
-      if (fine.evaluate(fingerprint)) {
+      if (await fine.evaluate(fingerprint)) {
         hasFines = true;
         data[fine.column] = fine.fineValue;
       }
