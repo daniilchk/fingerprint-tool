@@ -127,6 +127,15 @@ class DbService {
       isSingle: true,
     })
   }
+
+  async getRequestIntervals(id) {
+    return await this.makeRequestToDb({
+      query: SQL.deviceRequestsIntervals,
+      errorMessage: 'getRequestIntervals',
+      values: [ id ],
+      isSingle: true,
+    })
+  }
 }
 
 export const dbService = new DbService(pool);

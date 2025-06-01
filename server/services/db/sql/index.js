@@ -40,4 +40,8 @@ export default {
     `${sqlPath}/device_requests_by_id_get_count_in_minute.sql`,
     'utf-8',
   ),
+  deviceRequestsIntervals: readFileSync(
+    `${sqlPath}/device_requests_intervals.sql`,
+    'utf-8',
+  ),
 }

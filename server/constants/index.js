@@ -1,5 +1,6 @@
 import { hasSuspiciousAssetPatterns } from "../helpers/has-suspicious-asset-patterns.js";
 import { isFingerprintFlooding } from "../helpers/is-fingerprint-flooding.js";
+import {isEqualRequestIntervals} from "../helpers/is-equal-request-intervals.js";
 
 export const CRITERIA = {
   device_and_browser_signals: "device_and_browser_signals",
@@ -45,7 +46,7 @@ export const FINE_CRITERION_DATA = {
     },
     {
       column: "timestamp_pattern_fine",
-      evaluate: (fingerprint) => fingerprint?.no_movement, //переделать
+      evaluate: async (fingerprint) => await isEqualRequestIntervals(fingerprint?.id),
       fineValue: 20,
     },
   ],
