@@ -136,6 +136,24 @@ class DbService {
       isSingle: true,
     })
   }
+
+  async getRequestCountInHourByIp(ip) {
+    return await this.makeRequestToDb({
+      query: SQL.deviceRequestsByIpGetCountInHour,
+      errorMessage: 'requestsCountByIpGet',
+      values: [ ip ],
+      isSingle: true,
+    })
+  }
+
+  async getRequestsByIdWithDifferentIpCount(id) {
+    return await this.makeRequestToDb({
+      query: SQL.deviceRequestsByIdWithDifferentIpCount,
+      errorMessage: 'getRequestsByIdWithDifferentIpCount',
+      values: [ id ],
+      isSingle: true,
+    })
+  }
 }
 
 export const dbService = new DbService(pool);

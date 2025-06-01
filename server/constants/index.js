@@ -1,11 +1,14 @@
 import { hasSuspiciousAssetPatterns } from "../helpers/has-suspicious-asset-patterns.js";
 import { isFingerprintFlooding } from "../helpers/is-fingerprint-flooding.js";
 import {isEqualRequestIntervals} from "../helpers/is-equal-request-intervals.js";
+import {isSharedIP} from "../helpers/is-shared-ip.js";
+import {isIpInstability} from "../helpers/is-ip-instability.js";
 
 export const CRITERIA = {
   device_and_browser_signals: "device_and_browser_signals",
   page_behavior: "page_behavior",
-  session_history: "session_history"
+  session_history: "session_history",
+  network_anomalies: "network_anomalies",
 }
 
 export const FINE_CRITERION_DATA = {
@@ -50,10 +53,23 @@ export const FINE_CRITERION_DATA = {
       fineValue: 20,
     },
   ],
+  [CRITERIA.network_anomalies]: [
+    {
+      column: "is_shared_ip_fine",
+      evaluate: async (fingerprint) => await isSharedIP(fingerprint.ip),
+      fineValue: 15,
+    },
+    {
+      column: "ip_instability_fine",
+      evaluate: async (fingerprint) => await isIpInstability(fingerprint?.id),
+      fineValue: 20,
+    }
+  ]
 }
 
 export const MAX_FINE_BY_CRITERION = {
   [CRITERIA.device_and_browser_signals]: 45,
   [CRITERIA.page_behavior]: 20,
   [CRITERIA.session_history]: 45,
+  [CRITERIA.network_anomalies]: 35,
 }

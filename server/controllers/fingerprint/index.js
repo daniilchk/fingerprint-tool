@@ -17,10 +17,11 @@ class FingerprintController {
       }
 
       const otherFines = await this.collectFines(
-        {...static_data, ...dynamic_data, id: currentFingerprint?.id},
+        {...static_data, ...dynamic_data, id: currentFingerprint?.id, ip},
         [
           ...FINE_CRITERION_DATA[CRITERIA.page_behavior],
           ...FINE_CRITERION_DATA[CRITERIA.session_history],
+          ...FINE_CRITERION_DATA[CRITERIA.network_anomalies],
         ],
       );
 

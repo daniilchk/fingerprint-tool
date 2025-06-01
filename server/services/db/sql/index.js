@@ -44,4 +44,12 @@ export default {
     `${sqlPath}/device_requests_intervals.sql`,
     'utf-8',
   ),
+  deviceRequestsByIpGetCountInHour: readFileSync(
+    `${sqlPath}/device_requests_by_ip_get_count_in_hour.sql`,
+    'utf-8',
+  ),
+  deviceRequestsByIdWithDifferentIpCount: readFileSync(
+    `${sqlPath}/device_requests_by_id_with_different_ip_count.sql`,
+    'utf-8',
+  ),
 }
