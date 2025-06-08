@@ -154,6 +154,30 @@ class DbService {
       isSingle: true,
     })
   }
+
+  async batchUpdateConfig(updates) {
+    try {
+      const updatedRecords = [];
+
+      for (const update of updates) {
+        const result = await this.pool.query(
+          `UPDATE public.config 
+           SET is_enabled = $1, modified_at = NOW()
+           WHERE criterion_id = $2
+           RETURNING *`,
+          [update.is_enabled, update.criterion_id]
+        );
+
+        if (result.rows[0]) {
+          updatedRecords.push(result.rows[0]);
+        }
+      }
+
+      return updatedRecords;
+    } catch (error) {
+      throw new PgDatabaseError(`[DB error] Batch update failed: ${error.message}`);
+    }
+  }
 }
 
 export const dbService = new DbService(pool);

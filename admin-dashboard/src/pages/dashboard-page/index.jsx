@@ -27,7 +27,10 @@ export default function Dashboard() {
   const handleUpdate = async () => {
     setIsSaving(true);
     try {
-      await axios.post(`${apiDomain}/config`, config);
+      await axios.put(`${apiDomain}/api/config`, config.map((el) => ({
+        criterion_id: el.criterion_id,
+        is_enabled: el.is_enabled,
+      })));
     } catch (err) {
       console.error(err);
     } finally {
