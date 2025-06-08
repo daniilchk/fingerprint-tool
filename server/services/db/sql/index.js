@@ -52,4 +52,8 @@ export default {
     `${sqlPath}/device_requests_by_id_with_different_ip_count.sql`,
     'utf-8',
   ),
+  thresholdGet: readFileSync(
+    `${sqlPath}/threshold_get.sql`,
+    'utf-8',
+  ),
 }

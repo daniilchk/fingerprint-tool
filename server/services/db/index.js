@@ -178,6 +178,31 @@ class DbService {
       throw new PgDatabaseError(`[DB error] Batch update failed: ${error.message}`);
     }
   }
+
+  async getThreshold() {
+    return await this.makeRequestToDb({
+      query: SQL.thresholdGet,
+      errorMessage: 'thresholdGet',
+      isSingle: true,
+    })
+  }
+
+  async updateThreshold(newValue) {
+    try {
+      const result = await this.pool.query(
+        `UPDATE threshold 
+         SET value = $1, 
+             updated_at = NOW()
+         WHERE id = 1
+         RETURNING value;`,
+        [newValue]
+      );
+
+      return result.rows[0];
+    } catch (error) {
+      throw new PgDatabaseError(`[DB error] Threshold update failed: ${error.message}`);
+    }
+  }
 }
 
 export const dbService = new DbService(pool);

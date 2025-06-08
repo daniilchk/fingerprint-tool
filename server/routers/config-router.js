@@ -6,3 +6,5 @@ export const router = new Router();
 
 router.get("/config", ensureAuth, configController.getConfig);
 router.put("/config", ensureAuth, configController.updateConfig);
+router.get("/threshold", ensureAuth, configController.getThreshold);
+router.put("/threshold", ensureAuth, configController.updateThreshold);

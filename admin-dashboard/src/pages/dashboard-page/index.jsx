@@ -9,10 +9,8 @@ export default function Dashboard() {
   const { config: initialConfig } = useAuth();
   const [config, setConfig] = useState(initialConfig || []);
   const [isSaving, setIsSaving] = useState(false);
-
-  useEffect(() => {
-    setConfig(initialConfig || []);
-  }, [initialConfig]);
+  const [threshold, setThreshold] = useState(0);
+  const [isThresholdLoaded, setIsThresholdLoaded] = useState(false);
 
   const handleToggle = (criterionId) => {
     setConfig(cfg =>
@@ -31,12 +29,33 @@ export default function Dashboard() {
         criterion_id: el.criterion_id,
         is_enabled: el.is_enabled,
       })));
+      await axios.put(`${apiDomain}/api/threshold`, { threshold });
     } catch (err) {
       console.error(err);
     } finally {
       setIsSaving(false);
     }
   };
+
+  const getThreshold = async () => {
+    try {
+      const res = await axios.get(`${apiDomain}/api/threshold`);
+      setThreshold(Number(res.data.data));
+      setIsThresholdLoaded(true);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  useEffect(() => {
+    setConfig(initialConfig || []);
+  }, [initialConfig]);
+
+  useEffect(() => {
+    getThreshold();
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -72,11 +91,22 @@ export default function Dashboard() {
           </tbody>
         </table>
       </div>
-      <span>Threshold for Access Denied</span>
-      <input
-        className={styles.input}
-        value={60}
-      />
+      {isThresholdLoaded && (
+        <>
+          <span>Threshold for Access Denied</span>
+          <input
+            className={styles.input}
+            value={threshold}
+            type="number"
+            onChange={(event) => {
+              const value = Number(event.target.value);
+              if (value >= 0 && value <= 100) {
+                setThreshold(value);
+              }
+            }}
+          />
+        </>
+      )}
       <button
         className={styles.button}
         onClick={handleUpdate}

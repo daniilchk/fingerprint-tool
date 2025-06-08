@@ -32,8 +32,9 @@ class FingerprintController {
       await dbService.addDeviceRequest(currentFingerprint.id, ip);
 
       const riskScore = await this.calcRisk(currentFingerprint);
+      const threshold = await dbService.getThreshold();
 
-      if (riskScore > 75) {
+      if (riskScore > Number(threshold.value)) {
         return res.status(403).json({ message: "Access denied"});
       } else {
         return res.status(200).json({ status: 'ok' });
