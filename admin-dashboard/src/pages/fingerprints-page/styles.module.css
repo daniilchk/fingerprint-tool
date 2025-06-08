@@ -19,6 +19,12 @@
   font-weight: 600;
 }
 
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  width: 30%;
+  word-break: break-all;
+}
+
 .row:nth-child(even) {
   background: #fafafa;
 }

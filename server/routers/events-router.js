@@ -6,8 +6,8 @@ export const router = new Router();
 
 router.get("/events", ensureAuth, async (req, res, next) => {
   try {
-    const { rows } = await dbService.getDeviceRequests();
-    res.json(rows);
+    const data = await dbService.getDeviceRequests();
+    res.json(data);
   } catch (err) {
     next(err);
   }

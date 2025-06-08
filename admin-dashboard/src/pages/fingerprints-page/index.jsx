@@ -36,9 +36,10 @@ export default function Fingerprints() {
         <thead>
         <tr>
           <th>ID</th>
-          <th>Hash</th>
+          <th>Fingerprint</th>
+          <th>User Agent</th>
+          <th>Screen Resolution</th>
           <th>Risk Score</th>
-          <th>Created At</th>
         </tr>
         </thead>
         <tbody>
@@ -46,8 +47,9 @@ export default function Fingerprints() {
           <tr key={fp.id} className={styles.row}>
             <td className={styles.cell}>{fp.id}</td>
             <td className={styles.cell}>{fp.hash}</td>
+            <td className={styles.cell}>{fp.user_agent}</td>
+            <td className={styles.cell}>{fp.available_resolution}</td>
             <td className={styles.cell}>{fp.risk_score ?? 0}</td>
-            <td className={styles.cell}>{fp.created_at}</td>
           </tr>
         ))}
         </tbody>

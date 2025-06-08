@@ -1,8 +1,9 @@
 import { hasSuspiciousAssetPatterns } from "../helpers/has-suspicious-asset-patterns.js";
 import { isFingerprintFlooding } from "../helpers/is-fingerprint-flooding.js";
-import {isEqualRequestIntervals} from "../helpers/is-equal-request-intervals.js";
-import {isSharedIP} from "../helpers/is-shared-ip.js";
-import {isIpInstability} from "../helpers/is-ip-instability.js";
+import { isEqualRequestIntervals } from "../helpers/is-equal-request-intervals.js";
+import { isSharedIP } from "../helpers/is-shared-ip.js";
+import { isIpInstability } from "../helpers/is-ip-instability.js";
+import { hasMobileDesktopConflict } from "../helpers/has-mobile-desktop-conflict.js";
 
 export const CRITERIA = {
   device_and_browser_signals: "device_and_browser_signals",
@@ -27,6 +28,11 @@ export const FINE_CRITERION_DATA = {
       column: "suspicious_asset_patterns_fine",
       evaluate: hasSuspiciousAssetPatterns,
       fineValue: 20,
+    },
+    {
+      column: "mobile_desktop_conflict_fine",
+      evaluate: hasMobileDesktopConflict,
+      fineValue: 15,
     },
   ],
   [CRITERIA.page_behavior]: [
@@ -68,7 +74,7 @@ export const FINE_CRITERION_DATA = {
 }
 
 export const MAX_FINE_BY_CRITERION = {
-  [CRITERIA.device_and_browser_signals]: 45,
+  [CRITERIA.device_and_browser_signals]: 60,
   [CRITERIA.page_behavior]: 20,
   [CRITERIA.session_history]: 45,
   [CRITERIA.network_anomalies]: 35,

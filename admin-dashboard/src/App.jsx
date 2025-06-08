@@ -29,7 +29,7 @@ export default function App() {
           >
             <Route index element={<Dashboard />} />
             <Route path="fingerprints" element={<Fingerprints />} />
-            <Route path="device-monitoring" element={<DeviceMonitoring />} />
+            <Route path="monitoring" element={<DeviceMonitoring />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
